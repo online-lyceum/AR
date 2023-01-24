@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Camera control</title>
+    <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
+</head>
+<body>
+<script>
+    AFRAME.registerComponent('control', {
+        schema: {
+            speedPosition: Number,
+            speedRotationX: Number,
+            speedRotationY: Number,
+            speedRotationZ: Number
+        },
+        init: function () {
+            window.addEventListener("keydown", (event) => {
+                switch(event.code) {
+                    case "KeyW":
+                        this.el.object3D.position.x+= +this.data.speedPosition*Math.sin(this.el.object3D.rotation.y);
+                        this.el.object3D.position.y+= +this.data.speedPosition*Math.sin(this.el.object3D.rotation.x);
+                        this.el.object3D.position.z-= this.data.speedPosition*Math.cos(this.el.object3D.rotation.y);
+                        break;
+                    case "KeyS":
+                        this.el.object3D.position.x-=this.data.speedPosition*Math.sin(this.el.object3D.rotation.y);
+                        this.el.object3D.position.y-=this.data.speedPosition*Math.sin(this.el.object3D.rotation.x);
+                        this.el.object3D.position.z+= +this.data.speedPosition*Math.cos(this.el.object3D.rotation.y);
+                        break;
+
+                    case "KeyA":
+                        if(this.el.object3D.rotation.y+this.data.speedRotationY>359) {
+                            this.el.object3D.rotation.y = 0;
+                        }
+                        else {
+                            this.el.object3D.rotation.y+= +this.data.speedRotationY;
+                        }
+                        break;
+                    case "KeyD":
+                        if(this.el.object3D.rotation.y-this.data.speedRotationY<0) {
+                            this.el.object3D.rotation.y = 359;
+                        }
+                        else {
+                            this.el.object3D.rotation.y-=this.data.speedRotationY;
+                        }
+                        break;
+
+                    case "KeyQ":
+                        if(this.el.object3D.rotation.z+this.data.speedRotationZ>359) {
+                            this.el.object3D.rotation.z = 0;
+                        }
+                        else {
+                            this.el.object3D.rotation.z+= +this.data.speedRotationZ;
+                        }
+                        break;
+                    case "KeyE":
+                        if(this.el.object3D.rotation.z-this.data.speedRotationZ<0) {
+                            this.el.object3D.rotation.z = 359;
+                        }
+                        else {
+                            this.el.object3D.rotation.z-= this.data.speedRotationZ;
+                        }
+                        break;
+
+                    case "KeyR":
+                        if(this.el.object3D.rotation.x+this.data.speedRotationX>359) {
+                            this.el.object3D.rotation.x = 0;
+                        }
+                        else {
+                            this.el.object3D.rotation.x+= +this.data.speedRotationX;
+                        }
+                        break;
+                    case "KeyF":
+                        if(this.el.object3D.rotation.x-this.data.speedRotationX<0) {
+                            this.el.object3D.rotation.x = 359;
+                        }
+                        else {
+                            this.el.object3D.rotation.x-= this.data.speedRotationX;
+                        }
+                        break;
+                }
+            });
+        }
+
+    });
+
+</script>
+<a-scene embedded ar var-mode-ui="enabled: false" arjs="trackingMethod: best; sourceType: webcam;"
+         renderer="logarithmicDepthBuffer: true;">
+    <a-assets>
+        <a-asset-item id="rocket_asset" src="assets/rocket.glb"></a-asset-item>
+    </a-assets>
+    <a-gltf-model src="#rocket_asset" id="rocket"
+                  position="0 0 -2"
+    scale="0.1 0.1 0.1"></a-gltf-model>
+
+    <a-entity camera id="camera"
+              rotation="359 359 359"
+    control="speedPosition: 0.2;
+speedRotationX: 0.03;
+speedRotationY: 0.03;
+speedRotationZ: 0.03;"></a-entity>
+</a-scene>
+</body>
+</html>
