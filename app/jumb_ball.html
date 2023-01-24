@@ -6,8 +6,19 @@
     </head>
     <body>
         <a-scene embedded arjs>
-            <a-marker preset="hiro">     
-                <a-box position="0 3 0" 
+	    <a-assets>
+		<a-asset-item
+		    id="glbball"
+		    src="assets/ball.glb">
+		</a-asset-item>
+	    </a-assets>
+
+            <a-marker type="pattern" url="assets/pattern.patt"> 
+		<a-entity
+			id="ball"
+			gltf-model="#glbball"
+			position="0 3 0"></a-entity>
+        	<a-box position="10 13 10" 
                        animation__2="property: position; to: 0 0.5 0; dir: alternate; dur: 500; loop: true" 
                        color="tomato"></a-box>
             </a-marker>
