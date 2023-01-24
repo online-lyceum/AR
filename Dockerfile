@@ -6,7 +6,7 @@ WORKDIR /build
 #RUN npm init -y
 #RUN npm install 
 #RUN npm run build
-COPY ./ /build/dist/
+COPY ./app/ /build/dist/
 
 
 FROM nginx:stable
