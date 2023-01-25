@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <title>Exception</title>
+    <script src='js/three.js'></script>
+    <!-- include jsartookit -->
+    <script src="jsartoolkit5/artoolkit.min.js"></script>
+    <script src="jsartoolkit5/artoolkit.api.js"></script>
+    <script src="threex/threex-artoolkitsource.js"></script>
+    <script src="threex/threex-artoolkitcontext.js"></script>
+    <script src="threex/threex-arbasecontrols.js"></script>
+    <script src="threex/threex-armarkercontrols.js"></script>
+</head>
+
+<body style='margin : 0; overflow: hidden;'>
+<script>
+
+    let scene, camera, renderer, clock, deltaTime, totalTime;
+
+    let arToolkitSource, arToolkitContext;
+
+    let marker_group;
+
+    let mesh1;
+
+    initialize();
+    animate();
+
+    function initialize() {
+        scene = new THREE.Scene();
+
+        let ambientLight = new THREE.AmbientLight(0xFFFFFF, 1.0);
+        scene.add(ambientLight);
+
+        camera = new THREE.Camera();
+        scene.add(camera);
+
+        renderer = new THREE.WebGLRenderer({
+            antialias: true,
+            alpha: true
+        });
+        renderer.setClearColor(new THREE.Color('lightgrey'), 0)
+        renderer.setSize(640, 480);
+        renderer.domElement.style.position = 'absolute'
+        renderer.domElement.style.top = '0px'
+        renderer.domElement.style.left = '0px'
+        document.body.appendChild(renderer.domElement);
+
+        clock = new THREE.Clock();
+        deltaTime = 0;
+        totalTime = 0;
+
+        arToolkitSource = new THREEx.ArToolkitSource({
+            sourceType: 'webcam',
+        });
+
+        function onResize() {
+            arToolkitSource.onResize()
+            arToolkitSource.copySizeTo(renderer.domElement)
+            if (arToolkitContext.arController !== null) {
+                arToolkitSource.copySizeTo(arToolkitContext.arController.canvas)
+            }
+        }
+
+        arToolkitSource.init(function onReady() {
+            onResize()
+        });
+
+        // handle resize event
+        window.addEventListener('resize', function () {
+            onResize()
+        });
+        arToolkitContext = new THREEx.ArToolkitContext({
+            cameraParametersUrl: 'data/camera_para.dat',
+            detectionMode: 'mono'
+        });
+        arToolkitContext.init(function onCompleted() {
+            camera.projectionMatrix.copy(arToolkitContext.getProjectionMatrix());
+        });
+        marker_group = new THREE.Group();
+        marker_group.name = 'marker1';
+        scene.add(marker_group);
+        new THREEx.ArMarkerControls(arToolkitContext, marker_group, {
+            type: 'pattern',
+            patternUrl: "data/hiro.patt",
+        })
+        const box_size = 1.1;
+        let cube_geometry = new THREE.CubeGeometry(box_size, box_size, box_size);
+        let loader = new THREE.TextureLoader();
+        let texture = loader.load('images/tiles.jpg');
+        let cube_material = new THREE.MeshLambertMaterial({
+            transparent: true,
+            map: texture,
+            side: THREE.BackSide
+        });
+
+        mesh1 = new THREE.Mesh(cube_geometry, cube_material);
+        mesh1.position.y = - (box_size / 2);
+
+        marker_group.add(mesh1);
+
+
+        let invisible_geometry = new THREE.BoxGeometry(box_size, box_size, box_size);
+        console.log("invisible_geometry");
+        console.log(invisible_geometry)
+        invisible_geometry.faces.splice(4, 2);
+
+        let invisible_material = new THREE.MeshBasicMaterial({
+            colorWrite: false
+        });
+
+        let invisible_mesh = new THREE.Mesh(invisible_geometry, invisible_material);
+        invisible_mesh.scale.set(1, 1, 1).multiplyScalar(1.05);
+        invisible_mesh.position.y = - (box_size / 2);
+        marker_group.add(invisible_mesh);
+    }
+
+
+    function update() {
+        // update artoolkit on every frame
+        if (arToolkitSource.ready !== false)
+            arToolkitContext.update(arToolkitSource.domElement);
+    }
+
+
+    function render() {
+        renderer.render(scene, camera);
+    }
+
+
+    function animate() {
+        requestAnimationFrame(animate);
+        deltaTime = clock.getDelta();
+        totalTime += deltaTime;
+        update();
+        render();
+    }
+
+</script>
+
+</body>
+</html>
