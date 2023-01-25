@@ -1,0 +1,64 @@
+<html>
+
+<head>
+    <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
+</head>
+
+<body style='margin : 0px; overflow: scroll;'>
+    <a-scene embedded arjs>
+        <a-assets>
+            <a-asset-item id="as1" src="assets/as1.glb"></a-asset-item>
+            <a-asset-item id="as2" src="assets/as2.glb"></a-asset-item>
+            <a-asset-item id="as3" src="assets/as3.glb"></a-asset-item>
+        </a-assets>
+
+        <a-marker type="pattern" url="assets/custom_marker.patt">
+                <a-entity id="as1" gltf-model="#as1" 
+                    position="2 -2 3" 
+                    rotation="0 0 0" 
+                    scale="1 1 1"
+                    animation="
+                    property: rotation;
+                    to: 0 360 0;
+                    dur: 2000;
+                    easing: linear;
+                    loop: true;
+                    property: position; to: 3 0 -3; dir: alternate; dur: 100; loop: true">
+                </a-entity>
+
+                <a-entity id="as2" gltf-model="#as2" 
+                position="0 0 1" 
+                rotation="0 0 0" 
+                scale="1 1 1"
+                animation="
+                property: rotation;
+                to: 0 360 0;
+                dur: 2000;
+                easing: linear;
+                loop: true;
+                property: position; to: 0 0 -1; dir: alternate; dur: 500; loop: true">
+                </a-entity>
+
+                <a-entity id="as3" gltf-model="#as3" 
+                position="-2 0 -3" 
+                rotation="0 0 0" 
+                scale="1 1 1"
+                animation="
+                property: rotation;
+                to: 0 360 0;
+                dur: 2000;
+                easing: linear;
+                loop: true;
+                property: position; to: -2 0 3; dir: alternate; dur: 500; loop: true">
+                </a-entity>
+
+            </a-entity>
+        </a-marker>
+
+        <a-entity camera></entity>
+
+    </a-scene>
+</body>
+
+</html>
