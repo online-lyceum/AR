@@ -62,14 +62,21 @@
     </script>
     <a-scene embedded arjs> 
       <a-entity camera></a-entity>
-      <!-- <a-marker preset="hiro"> -->
-      <!-- </a-marker>  -->
+      <a-assets>
+	<a-asset-item
+		id="glbball"
+		src="assets/ball.glb">
+	</a-asset-item>
+      </a-assets>
+
       <a-entity>
           <a-marker id="target-marker1" preset="hiro"></a-marker>
-      <!-- <a-marker preset="kanji"> -->
-          <a-marker type="pattern" id="target-marker2" url="assets/pattern.patt"></a-marker>
-      <!-- </a-marker> -->
-          <a-box follow="target: target-marker1, target-marker2; speed: 3" color="blue" position="4 0 0"></a-box>
+          <a-marker type="pattern" id="target-marker2" url="assets/custom_marker.patt"></a-marker>
+      	  <a-entity
+		  gltf-model="#glbball"
+		  scale="0.25 0.25 0.25"
+		  follow="target: target-marker1, target-marker2; speed: 3;" color="blue" position="4 0 0">
+	  </a-entity>
       </a-entity>
     </a-scene>
   </body>
