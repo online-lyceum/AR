@@ -1,0 +1,64 @@
+<html lang="ru">
+<head>
+    <script src="https://aframe.io/releases/1.4.1/aframe.min.js"></script>
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js">
+    </script>
+    <meta charset="UTF-8">
+    <title>L</title>
+    <script>
+	document.addEventListener("DOMContentLoaded", () => {
+		let marker = document.querySelector("#marker")
+		marker.addEventListener('markerFound', function() {
+			console.log('markerFound');
+		});
+		marker.addEventListener('markerLost', function() {
+			console.log('markerLost');
+		});
+	});
+	let selectedEl = null;
+	AFRAME.registerComponent('cursor-listener', {
+	  init: function () {
+	    var lastIndex = -1;
+	    var COLORS = ['red', 'green', 'blue', 'purple', 'black'];
+	    this.el.addEventListener('click', function (evt) {
+	      this.setAttribute('material', 'color', 'blue');
+	      selectedEl = this;
+	      // lastIndex = Math.floor(Math.random() * 5);
+	      // this.setAttribute('material', 'color', COLORS[lastIndex]);
+	      console.log('I was clicked at: ', evt.detail.intersection.point);
+	    });
+	  }
+	});
+
+	function pasteEl() {
+	    if (selectedEl !== null) {
+		selectedEl.setAttribute('material', 'color', 'red');
+		selectedEl = null;
+	    } else {
+		console.log("Not selected")
+	    }
+	}
+    </script>
+</head>
+<body>
+<a-scene embedded arjs>
+    <a-marker type="pattern" url="assets/game_pattern1.patt">
+        <a-box id="box1" color="black" cursor-listener></a-box>
+    </a-marker>
+    <a-marker type="pattern" url="assets/game_pattern2.patt">
+        <a-box id="box2" color="black" cursor-listener></a-box>
+    </a-marker>
+    <a-marker type="pattern" url="assets/game_pattern3.patt">
+        <a-box id="box3" color="black" cursor-listener></a-box>
+    </a-marker>
+    <a-entity camera>
+	  <a-entity cursor="fuse: true; fuseTimeout: 500"
+		    position="0 0 -1"
+		    geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.03"
+		    material="color: black; shader: flat">
+	  </a-entity>
+    </a-entity>
+</a-scene>
+<button onclick="pasteEl()">Click</button>
+</body>
+</html>
