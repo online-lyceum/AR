@@ -8024,7 +8024,7 @@ ARjs.MarkersAreaUtils.createDefaultMarkersControlsParameters = function(tracking
 			},
 			{
 				type : 'pattern',
-				patternUrl : absoluteBaseURL + 'examples/marker-training/examples/pattern-files/pattern-kanji.patt',
+				patternUrl : absoluteBaseURL + 'examples/marker-training/examples/pattern-files/task3_pattern_kanji.patt',
 			},
 			{
 				type : 'pattern',

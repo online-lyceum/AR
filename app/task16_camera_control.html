@@ -19,65 +19,61 @@
             window.addEventListener("keydown", (event) => {
                 switch(event.code) {
                     case "KeyW":
-                        this.el.object3D.position.x+= +this.data.speedPosition*Math.sin(this.el.object3D.rotation.y);
-                        this.el.object3D.position.y+= +this.data.speedPosition*Math.sin(this.el.object3D.rotation.x);
-                        this.el.object3D.position.z-= this.data.speedPosition*Math.cos(this.el.object3D.rotation.y);
+                        this.el.object3D.position.z-=this.data.speedPosition;
                         break;
                     case "KeyS":
-                        this.el.object3D.position.x-=this.data.speedPosition*Math.sin(this.el.object3D.rotation.y);
-                        this.el.object3D.position.y-=this.data.speedPosition*Math.sin(this.el.object3D.rotation.x);
-                        this.el.object3D.position.z+= +this.data.speedPosition*Math.cos(this.el.object3D.rotation.y);
+                        this.el.object3D.position.z+= +this.data.speedPosition;
                         break;
 
                     case "KeyA":
-                        if(this.el.object3D.rotation.y+this.data.speedRotationY>359) {
-                            this.el.object3D.rotation.y = 0;
-                        }
-                        else {
-                            this.el.object3D.rotation.y+= +this.data.speedRotationY;
-                        }
+                        this.el.object3D.position.x-=this.data.speedPosition;
                         break;
                     case "KeyD":
+                        this.el.object3D.position.x+= +this.data.speedPosition;
+                        break;
+
+                    case "KeyE":
                         if(this.el.object3D.rotation.y-this.data.speedRotationY<0) {
                             this.el.object3D.rotation.y = 359;
                         }
-                        else {
-                            this.el.object3D.rotation.y-=this.data.speedRotationY;
-                        }
+                        else this.el.object3D.rotation.y-=this.data.speedRotationY;
                         break;
-
                     case "KeyQ":
-                        if(this.el.object3D.rotation.z+this.data.speedRotationZ>359) {
-                            this.el.object3D.rotation.z = 0;
+                        if(this.el.object3D.rotation.y+this.data.speedRotationY>359) {
+                            this.el.object3D.rotation.y = 0;
                         }
-                        else {
-                            this.el.object3D.rotation.z+= +this.data.speedRotationZ;
-                        }
-                        break;
-                    case "KeyE":
-                        if(this.el.object3D.rotation.z-this.data.speedRotationZ<0) {
-                            this.el.object3D.rotation.z = 359;
-                        }
-                        else {
-                            this.el.object3D.rotation.z-= this.data.speedRotationZ;
-                        }
+                        else this.el.object3D.rotation.y+= +this.data.speedRotationY;
                         break;
 
                     case "KeyR":
+                        this.el.object3D.position.y+= +this.data.speedPosition;
+                        break;
+                    case "KeyF":
+                        this.el.object3D.position.y-=this.data.speedPosition;
+                        break;
+                    case "KeyT":
                         if(this.el.object3D.rotation.x+this.data.speedRotationX>359) {
                             this.el.object3D.rotation.x = 0;
                         }
-                        else {
-                            this.el.object3D.rotation.x+= +this.data.speedRotationX;
-                        }
+                        else this.el.object3D.rotation.x+= +this.data.speedRotationX;
                         break;
-                    case "KeyF":
+                    case "KeyG":
                         if(this.el.object3D.rotation.x-this.data.speedRotationX<0) {
                             this.el.object3D.rotation.x = 359;
                         }
-                        else {
-                            this.el.object3D.rotation.x-= this.data.speedRotationX;
+                        else this.el.object3D.rotation.x-=this.data.speedRotationX;
+                        break;
+                    case "KeyZ":
+                        if(this.el.object3D.rotation.z-this.data.speedRotationZ<0) {
+                            this.el.object3D.rotation.z = 359;
                         }
+                        else this.el.object3D.rotation.z-=this.data.speedRotationZ;
+                        break;
+                    case "KeyC":
+                        if(this.el.object3D.rotation.z+this.data.speedRotationZ>359) {
+                            this.el.object3D.rotation.z = 0;
+                        }
+                        else this.el.object3D.rotation.z+= +this.data.speedRotationZ;
                         break;
                 }
             });
@@ -85,19 +81,62 @@
 
     });
 
+    var duration;
+    AFRAME.registerComponent('flying', {
+        schema: {
+            speed: Number
+        },
+
+        init: function () {
+            duration = 0;
+        },
+
+        tick: function () {
+            if(duration<=20000) {
+                if(duration<10000) {
+                    this.el.object3D.position.x+= +this.data.speed;
+                }
+                if(duration>10000) {
+                    this.el.object3D.position.x-=this.data.speed;
+                }
+                if(duration===10000) {
+                    this.el.object3D.rotation.z += +180;
+                }
+                duration++;
+            }
+            else {
+                this.el.object3D.rotation.z+= +180;
+                duration = 0;
+            }
+        }
+
+    });
+
+
 </script>
 <a-scene embedded ar var-mode-ui="enabled: false" arjs="trackingMethod: best; sourceType: webcam;"
          renderer="logarithmicDepthBuffer: true;">
     <a-assets>
         <a-asset-item id="rocket_asset" src="assets/rocket.glb"></a-asset-item>
+        <img id="moon_asset" src="assets/task1_moon.jpg">
     </a-assets>
     <a-gltf-model src="#rocket_asset" id="rocket"
                   position="0 0 -2"
-    scale="0.1 0.1 0.1"></a-gltf-model>
+                  rotation="0 0 -90"
+    scale="0.1 0.1 0.1"
+    flying="speed: 0.01;"></a-gltf-model>
+
+    <a-plane position="0 -2 0"
+             scale="50 50 50"
+             src="#moon_asset"
+    rotation="-90 0 0"
+    width="50"
+    height="50"
+    repeat="50 50"></a-plane>
 
     <a-entity camera id="camera"
               rotation="359 359 359"
-    control="speedPosition: 0.2;
+    control="speedPosition: 0.05;
 speedRotationX: 0.03;
 speedRotationY: 0.03;
 speedRotationZ: 0.03;"></a-entity>

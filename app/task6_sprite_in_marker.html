@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
+    <title>Sprite in marker</title>
+</head>
+<body style="margin: 0px; overflow: scroll">
+<script>
+    AFRAME.registerComponent('spritesheet',{
+    schema:  {
+        rows: {
+            type: 'number',
+        default:
+            1
+        },
+        columns: {
+            type: 'number',
+        default:
+            1
+        },
+        firstFrameIndex: {type: 'number', default: 0},
+        lastFrameIndex: {type: 'number', default: -1},
+        frameDuration: {type: 'number', default: 1},
+        loop: {type: 'boolean', default: true},  },
+
+        init: function()  {
+            this.repeatX = 1 / this.data.columns;
+            this.repeatY = 1 / this.data.rows;
+            if (this.data.lastFrameIndex == -1)
+                this.data.lastFrameIndex = this.data.columns * this.data.rows - 1;
+            this.mesh = this.el.getObject3D("mesh");   this.frameTimer = 0;
+            this.currentFrameIndex = this.data.firstFrameIndex;
+            this.animationFinished = false;
+        },
+
+        tick: function (time, timeDelta)  {
+            if (this.animationFinished)    return;
+            this.frameTimer += timeDelta / 1000;
+            while (this.frameTimer > this.data.frameDuration)   {
+                this.currentFrameIndex += 1;
+                this.frameTimer -= this.data.frameDuration;
+                if (this.currentFrameIndex > this.data.lastFrameIndex)    {
+                    if (this.data.loop)     {
+                        this.currentFrameIndex = this.data.firstFrameIndex;
+                    }
+                    else     {
+                        this.animationFinished = true;
+                        return;
+                    }    }
+            }   let rowNumber = Math.floor(this.currentFrameIndex / this.data.columns);
+            let columnNumber = this.currentFrameIndex % this.data.columns;
+            let offsetY = (this.data.rows - rowNumber - 1) / this.data.rows;
+            let offsetX = columnNumber / this.data.columns;
+            if ( this.mesh.material.map )   {
+                this.mesh.material.map.repeat.set(this.repeatX, this.repeatY);
+                this.mesh.material.map.offset.set(offsetX, offsetY);
+            }
+        }
+    });
+</script>
+<a-scene embedded ar var-mode-ui="enabled: false" arjs="trackingMethod: best; sourceType: webcam;"
+         renderer="logarithmicDepthBuffer: true;">
+    <a-assets>
+        <img src="assets/sprite_sheet.png" id="sprite_sheet_asset">
+    </a-assets>
+
+    <a-marker preset="hiro">
+        <a-plane
+                width="1"
+                height="1"
+                src="#sprite_sheet_asset"
+                spritesheet="rows: 4; columns: 12; frameDuration: 0.08; loop: true;"
+        rotation="-90 0 0"></a-plane>
+    </a-marker>
+
+    <a-entity camera></a-entity>
+</a-scene>
+</body>
+</html>

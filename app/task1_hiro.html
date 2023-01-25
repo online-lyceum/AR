@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
+    <title>Hiro marker</title>
+</head>
+<body style="margin: 0px; overflow: scroll">
+<a-scene embedded ar var-mode-ui="enabled: false" arjs="trackingMethod: best; sourceType: webcam;"
+         renderer="logarithmicDepthBuffer: true;">
+    <a-assets>
+        <img src="assets/task1_moon.jpg" id="moon_asset">
+    </a-assets>
+
+    <a-marker preset="hiro">
+        <a-entity text="value: throw new HackatonException(); color: red;"
+                  position="0.2 1 0"
+                  align="right"
+                  rotation="-90 0 0"
+                  scale="3 3 3"></a-entity>
+        <a-sphere
+            position="0 0 -1"
+            src="#moon_asset"
+            rotation="-90 0 0"
+        animation="
+property: rotation;
+from: -90 0 0;
+easing: linear;
+to: -90 360 0;
+dur: 500;
+loop: true;"></a-sphere>
+    </a-marker>
+
+    <a-entity camera></a-entity>
+</a-scene>
+</body>
+</html>
