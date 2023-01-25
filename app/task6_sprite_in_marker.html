@@ -65,11 +65,10 @@
         <img src="assets/sprite_sheet.png" id="sprite_sheet_asset">
     </a-assets>
 
-    <a-marker preset="hiro">
+    <a-marker preset="custom" type="pattern" url="assets/sprite_on_plane.patt">
         <a-plane
                 width="1"
-                height="1"
-                src="#sprite_sheet_asset"
+                height="1"                src="#sprite_sheet_asset"
                 spritesheet="rows: 4; columns: 12; frameDuration: 0.08; loop: true;"
         rotation="-90 0 0"></a-plane>
     </a-marker>
